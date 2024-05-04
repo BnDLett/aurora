@@ -7,6 +7,7 @@ import json
 # Command imports
 import fetch_youtube_f
 
+# Constants
 AURORA = [
     "#01efac",
     "#01cbae",
@@ -22,7 +23,9 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
+VERSION = "1.0.0a"
 
+# Globals
 color_index = 0
 
 bot = interactions.AutoShardedClient()
