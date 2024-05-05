@@ -1,6 +1,8 @@
+import interactions
 import yt_dlp
 import os
 from pathlib import Path
+from Utils import Utils
 
 
 def download_audio(link: str, ydl_opts: dict, file_format: str):
@@ -31,11 +33,13 @@ def download_audio(link: str, ydl_opts: dict, file_format: str):
     return info
 
 
-async def fetch(links: list, search_terms: str, video: bool, file_format: str, codec: str) -> list:
+async def fetch(links: list, search_terms: str, video: bool, file_format: str, codec: str, msg: interactions.Message,
+                utils: Utils) -> list:
     ydl_opts = {
         'writethumbnail': True,
         'format': 'bestaudio/best',
         'quiet': True,
+        'ignore-errors': True,
         "paths": {file_format: 'cache', 'webm': 'cache'},
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
@@ -52,7 +56,13 @@ async def fetch(links: list, search_terms: str, video: bool, file_format: str, c
         ], }
     file_list = []
 
-    for link in links:
+    for index, link in enumerate(links):
         file_list.append(download_audio(link, ydl_opts, file_format))
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(link, False)
+            title = info.get('title')
+
+        embed = await utils.get_new_embed(f"Downloaded or found in cache: {title}")
+        await msg.edit(embed=embed)
 
     return file_list
