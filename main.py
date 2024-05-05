@@ -10,6 +10,7 @@ import fetch_youtube_f
 FORMATS: list[list[str]] = [
     ['ogg', 'vorbis'],
     ['opus', 'opus'],
+    ['mp3', 'mp3'],
     # ['mp4', 'h264']
 ]
 FORMAT_CHOICES = []
@@ -84,7 +85,7 @@ async def update_commands(ctx: SlashContext):
 )
 async def fetch_media(ctx: SlashContext, file_format: int = 0, links: str = "", search_terms: str = "None",
                       video: bool = False):
-    start = time.perf_counter() * 1000
+    start = time.monotonic() * 1000
 
     utils = Utils(["Links are not yet ready."], search_terms, start)
     embed = await utils.get_new_embed("Fiddling with variables...", new_line=False)

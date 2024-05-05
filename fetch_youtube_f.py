@@ -41,6 +41,7 @@ async def fetch(links: list, search_terms: str, video: bool, file_format: str, c
         'quiet': True,
         'ignore-errors': True,
         "paths": {file_format: 'cache', 'webm': 'cache'},
+        'outtmpl': "cache/%(title)s-%(id)s.%(ext)s",
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': codec,
@@ -58,6 +59,8 @@ async def fetch(links: list, search_terms: str, video: bool, file_format: str, c
 
     for index, link in enumerate(links):
         file_list.append(download_audio(link, ydl_opts, file_format))
+        await utils.add_downloaded(amount=1)
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(link, False)
             title = info.get('title')

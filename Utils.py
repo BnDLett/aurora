@@ -18,15 +18,30 @@ class Utils:
     search_terms: str
     start: float
     desc: str
+    downloaded: int
 
     def __init__(self, links: list[str], search_terms: str, start: float):
         self.links = links
         self.search_terms = search_terms
         self.start = start
         self.desc = ""
+        self.downloaded = 0
+
+    async def add_downloaded(self, amount: int = 1) -> None:
+        """
+        Adds `amount` (default: 1) to self.downloaded().
+        :return: None
+        """
+        self.downloaded += 1
 
     async def get_new_embed(self, append: str, new_line: bool = True) -> interactions.Embed:
-        self.desc += f"{'\n\n' if new_line else ''}[{((time.perf_counter() * 1000) - self.start):.2f}ms] {append}"
+        """
+        Retrieves a new embed and appends a status update.
+        :param append: The status update to append to the embed.
+        :param new_line: Whether to put two new lines at the start of the status update.
+        :return: Embed
+        """
+        self.desc += f"{'\n\n' if new_line else ''}[{((time.monotonic() * 1000) - self.start):.2f}ms] {append}"
         embed = await self.prepare_embed()
 
         global color_index
@@ -60,7 +75,8 @@ class Utils:
         embed = interactions.Embed(
             title="Fetch Media",
             description=f"Link(s) used:\n```yaml\n{link_msg}```\nSearch terms:\n```yaml\n{self.search_terms}\n```"
-                        f"\nTitles:\n```yaml\n{title_msg + " "}\n```\nStatus:\n```yaml\n{self.desc}\n```",
+                        f"\nTitles:\n```yaml\n{title_msg + " "}\n```\nFiles downloaded: ```yaml\n"
+                        f"[{self.downloaded}/{len(self.links)}]\n```\nStatus:\n```yaml\n{self.desc}\n```",
             color=Color(AURORA[color_index % len(AURORA)])
         )
         print(color_index % len(AURORA))
