@@ -1,4 +1,6 @@
 import time
+
+import aiohttp
 import interactions
 from interactions import slash_command, SlashContext, slash_option, OptionType, SlashCommandChoice
 import json
@@ -109,4 +111,8 @@ async def fetch_media(ctx: SlashContext, file_format: int = 0, links: str = "", 
     await msg.edit(files=file_list, embed=embed)
 
 
-bot.start(token)
+while True:
+    try:
+        bot.start(token)
+    except aiohttp.ClientConnectorError:
+        continue
