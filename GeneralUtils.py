@@ -1,3 +1,4 @@
+import json
 import interactions
 import yt_dlp
 from interactions import Color
@@ -13,7 +14,7 @@ AURORA = [
 ]
 
 
-class Utils:
+class FetchMediaUtils:
     links: list[str]
     search_terms: str
     start: float
@@ -81,3 +82,27 @@ class Utils:
         )
         print(color_index % len(AURORA))
         return embed
+
+
+class Configuration:
+    """
+    Class that handles configuration for the bot. Streamlines configuration access.
+    """
+    def __init__(self, fi: str):
+        """
+        A class that streamlines configuration access.
+        :param fi: The path to the configuration file.
+        """
+
+        self._fi_stream = open(fi)
+        self._fi_content = self._fi_stream.read()
+        self._fi_json = json.loads(self._fi_content)
+
+        # Discord specific configurations
+        self.discord_token = self._fi_json["token"]
+        self.discord_scopes = self._fi_json["scopes"]
+
+        # Reddit specific configurations
+        self.reddit_client_id = self._fi_json["reddit_client_id"]
+        self.reddit_client_secret = self._fi_json["reddit_client_secret"]
+        self.reddit_client_agent = self._fi_json["reddit_client_agent"]

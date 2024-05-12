@@ -2,7 +2,7 @@ import interactions
 import yt_dlp
 import os
 from pathlib import Path
-from Utils import Utils
+from GeneralUtils import FetchMediaUtils
 
 
 def download_audio(link: str, ydl_opts: dict, file_format: str):
@@ -34,7 +34,7 @@ def download_audio(link: str, ydl_opts: dict, file_format: str):
 
 
 async def fetch(links: list, search_terms: str, video: bool, file_format: str, codec: str, msg: interactions.Message,
-                utils: Utils) -> list:
+                utils: FetchMediaUtils) -> list:
     ydl_opts = {
         'writethumbnail': True,
         'format': 'bestaudio/best',
