@@ -22,7 +22,7 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.2.0a"
+VERSION = "2.2.1a"
 
 # Globals
 color_index = 0
