@@ -100,7 +100,7 @@ class Configuration:
 
         # Discord specific configurations
         self.discord_token = self._fi_json["token"]
-        self.discord_scopes = self._fi_json["scopes"]
+        self.discord_scopes = self._fi_json["debug_scopes"]
 
         # Reddit specific configurations
         self.reddit_client_id = self._fi_json["reddit_client_id"]
