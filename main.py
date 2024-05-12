@@ -1,10 +1,12 @@
 import time
-
+import random
 import aiohttp
 import asyncpraw
 import asyncprawcore.exceptions
 import interactions
-from interactions import slash_command, SlashContext, slash_option, OptionType, SlashCommandChoice
+from interactions import slash_command, SlashContext, slash_option, OptionType, SlashCommandChoice, check, is_owner
+
+import GeneralUtils
 from GeneralUtils import FetchMediaUtils, Configuration
 
 # Command imports
@@ -20,24 +22,24 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.0.0a"
+VERSION = "2.1.0a"
 
 # Globals
 color_index = 0
 
 bot = interactions.AutoShardedClient()
 config = Configuration("conf.json")
+bot.debug_scope = config.discord_scopes
 
 
 @interactions.listen()
 async def on_startup():
-    print("Bot is ready!")
+    print(f"Bot is ready!\nCurrently in {len(bot.guilds)} servers.")
 
 
 @slash_command(
     name="ping",
     description="Checks the latency of the bot.",
-    scopes=config.discord_scopes,
 )
 async def ping(ctx: SlashContext):
     embed = interactions.Embed(
@@ -50,7 +52,6 @@ async def ping(ctx: SlashContext):
 @slash_command(
     name="update_commands",
     description="Updates the bots commands. Removes old ones, adds new ones.",
-    scopes=config.discord_scopes
 )
 async def update_commands(ctx: SlashContext):
     ctx.bot.interaction_tree.update()
@@ -60,7 +61,6 @@ async def update_commands(ctx: SlashContext):
 @slash_command(
     name="fetch_media",
     description="Fetches an audio/video file from a supported website.",
-    scopes=config.discord_scopes,
 )
 @slash_option(
     name="links",
@@ -112,7 +112,6 @@ async def fetch_media(ctx: SlashContext, file_format: int = 0, links: str = "", 
 @slash_command(
     name="fetch_subreddit_post",
     description="Fetches a post from a subreddit.",
-    scopes=config.discord_scopes
 )
 @slash_option(
     name="subreddit",
@@ -160,7 +159,6 @@ async def fetch_subreddit_post(ctx: interactions.SlashContext, subreddit: str, n
 @slash_command(
     name="fetch_redditor",
     description="Fetches a redditor by username.",
-    scopes=config.discord_scopes
 )
 @slash_option(
     name="username",
@@ -188,6 +186,45 @@ async def fetch_redditor(ctx: interactions.SlashContext, username: str):
             )
 
     await msg.edit(content="", embed=embed)
+
+
+@slash_command(
+    name="bot_statistics",
+    description="Fetch bot statistics.",
+)
+async def bot_statistics(ctx: interactions.SlashContext):
+    color = random.choice(GeneralUtils.AURORA)
+
+    embed = interactions.Embed(
+        title="Bot Statistics",
+        description=f"Servers: `{len(bot.guilds)}`\nVersion: 1{VERSION}1",
+        color=color
+    )
+
+    await ctx.send(embed=embed)
+
+
+@slash_command(
+    name="servers",
+    description="The servers that the bot is in.",
+)
+@check(is_owner())
+async def servers(ctx: interactions.SlashContext):
+    string = ""
+    server: interactions.Guild
+    color = random.choice(GeneralUtils.AURORA)
+
+    for server_index, server in enumerate(bot.guilds):
+        escape = "\n" if not (server_index + 1) == len(bot.guilds) else ""
+        string += f"[{server_index + 1}]: {server.name} {escape}"
+
+    embed = interactions.Embed(
+        title="Servers",
+        description=f"```yaml\n{string}\n```",
+        color=color
+    )
+
+    await ctx.send(embed=embed)
 
 
 while True:
