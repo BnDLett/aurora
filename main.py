@@ -22,14 +22,14 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.1.0a"
+VERSION = "2.1.1a"
 
 # Globals
 color_index = 0
 
 bot = interactions.AutoShardedClient()
 config = Configuration("conf.json")
-bot.debug_scope = config.discord_scopes
+# bot.debug_scope = config.discord_scopes
 
 
 @interactions.listen()
