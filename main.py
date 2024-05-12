@@ -22,7 +22,7 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.1.1a"
+VERSION = "2.1.2a"
 
 # Globals
 color_index = 0
@@ -197,7 +197,7 @@ async def bot_statistics(ctx: interactions.SlashContext):
 
     embed = interactions.Embed(
         title="Bot Statistics",
-        description=f"Servers: `{len(bot.guilds)}`\nVersion: 1{VERSION}1",
+        description=f"Servers: `{len(bot.guilds)}`\nVersion: `{VERSION}`",
         color=color
     )
 
