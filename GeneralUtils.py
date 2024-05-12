@@ -98,11 +98,15 @@ class Configuration:
         self._fi_content = self._fi_stream.read()
         self._fi_json = json.loads(self._fi_content)
 
+        # General
+        self.debug: bool = self._fi_json["debug"]
+
         # Discord specific configurations
-        self.discord_token = self._fi_json["token"]
-        self.discord_scopes = self._fi_json["debug_scopes"]
+        self.discord_token: str = self._fi_json["token"]
+        self.discord_debug_token: str = self._fi_json["debug_token"]
+        self.discord_scope: str = self._fi_json["debug_scope"]
 
         # Reddit specific configurations
-        self.reddit_client_id = self._fi_json["reddit_client_id"]
-        self.reddit_client_secret = self._fi_json["reddit_client_secret"]
-        self.reddit_client_agent = self._fi_json["reddit_client_agent"]
+        self.reddit_client_id: str = self._fi_json["reddit_client_id"]
+        self.reddit_client_secret: str = self._fi_json["reddit_client_secret"]
+        self.reddit_client_agent: str = self._fi_json["reddit_client_agent"]

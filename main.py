@@ -22,16 +22,21 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.1.2a"
+VERSION = "2.2.0a"
 
 # Globals
 color_index = 0
-
 bot = interactions.AutoShardedClient()
 config = Configuration("conf.json")
-# bot.debug_scope = config.discord_scopes
+
+if config.debug:
+    bot.debug_scope = config.discord_scope
+    token = config.discord_debug_token
+else:
+    token = config.discord_token
 
 
+# Commands
 @interactions.listen()
 async def on_startup():
     print(f"Bot is ready!\nCurrently in {len(bot.guilds)} servers.")
@@ -229,6 +234,6 @@ async def servers(ctx: interactions.SlashContext):
 
 while True:
     try:
-        bot.start(config.discord_token)
+        bot.start(token)
     except aiohttp.ClientConnectorError:
         continue
