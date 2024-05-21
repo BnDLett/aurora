@@ -22,7 +22,7 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.2.1a"
+VERSION = "2.2.2a"
 
 # Globals
 color_index = 0
@@ -236,4 +236,8 @@ while True:
     try:
         bot.start(token)
     except aiohttp.ClientConnectorError:
+        print("Client has disconnected.")
+        continue
+    except ValueError:
+        print("Experienced a ValueError exception.")
         continue
