@@ -22,7 +22,7 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.2.2a"
+VERSION = "2.2.3a"
 
 # Globals
 color_index = 0
@@ -34,6 +34,8 @@ if config.debug:
     token = config.discord_debug_token
 else:
     token = config.discord_token
+
+bot.load_extension("interactions.ext.jurigged")
 
 
 # Commands
@@ -232,12 +234,4 @@ async def servers(ctx: interactions.SlashContext):
     await ctx.send(embed=embed)
 
 
-while True:
-    try:
-        bot.start(token)
-    except aiohttp.ClientConnectorError:
-        print("Client has disconnected.")
-        continue
-    except ValueError:
-        print("Experienced a ValueError exception.")
-        continue
+bot.start(token)
