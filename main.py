@@ -1,9 +1,14 @@
+import asyncio
+import threading
 import time
 import random
+from pprint import pprint
+
 import aiohttp
 import asyncpraw
 import asyncprawcore.exceptions
 import interactions
+import yt_dlp
 from interactions import slash_command, SlashContext, slash_option, OptionType, SlashCommandChoice, check, is_owner
 
 import GeneralUtils
@@ -22,7 +27,7 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.2.4a"
+VERSION = "2.3.0a"
 
 # Globals
 color_index = 0
@@ -114,6 +119,75 @@ async def fetch_media(ctx: SlashContext, file_format: int = 0, links: str = "", 
     embed = await utils.get_new_embed("File(s) are now downloaded and/or were previously cached, proceeding with "
                                       "upload process.")
     await msg.edit(files=file_list, embed=embed)
+
+
+@slash_command(
+    name="optimized_media_fetch",
+    description="An optimized version of the `fetch_media` command that comes at the cost of some QOL features.",
+)
+@slash_option(
+    name="link_string",
+    description="The links to use.",
+    opt_type=OptionType.STRING
+)
+@slash_option(
+    name="file_format",
+    description="The format of the file.",
+    opt_type=OptionType.NUMBER,
+    choices=FORMAT_CHOICES
+)
+async def optimized_media_fetch(ctx: SlashContext, file_format: int = 0, link_string: str = "", search_terms: str = "None",
+                                video: bool = False):
+    await ctx.send("Processing your request. This may take a moment.")
+    start = time.time()
+
+    channel = ctx.channel
+    links = link_string.split(', ')
+    filepaths = []
+
+    file_format_list: list[str] = FORMATS[int(file_format)]
+    file_format = file_format_list[0]
+    codec = file_format_list[1]
+
+    ydl_opts = {
+        'writethumbnail': True,
+        'format': 'bestaudio/best',
+        'quiet': True,
+        'ignore-errors': True,
+        "paths": {file_format: 'cache', 'webm': 'cache'},
+        'outtmpl': "cache/%(title)s-%(id)s.%(ext)s",
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': codec,
+            'preferredquality': '192'
+        }, {
+            'key': 'FFmpegMetadata',
+            'add_metadata': True
+        },
+            {
+                'key': 'EmbedThumbnail',
+                'already_have_thumbnail': False,
+            }
+        ], }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        if config.debug:
+            await channel.send(f'[DEBUG] [{time.time() - start}] Starting download now.')
+
+        for link in links:
+            link_info = ydl.extract_info(link)
+            filepath = link_info['requested_downloads'][0]['filepath']
+            filepaths.append(filepath)
+
+    if config.debug:
+        await channel.send(f'[DEBUG] [{time.time() - start}] Starting upload now.')
+
+    # asyncio.run(channel.send("Success!"))
+    await channel.send(
+        content="",
+        files=filepaths
+    )
+    await channel.send(f"Request finished in `{time.time() - start}` seconds.")
 
 
 @slash_command(
