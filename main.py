@@ -1,10 +1,5 @@
-import asyncio
-import threading
 import time
 import random
-from pprint import pprint
-
-import aiohttp
 import asyncpraw
 import asyncprawcore.exceptions
 import interactions
@@ -12,7 +7,8 @@ import yt_dlp
 from interactions import slash_command, SlashContext, slash_option, OptionType, SlashCommandChoice, check, is_owner
 
 import GeneralUtils
-from GeneralUtils import FetchMediaUtils, Configuration
+from GeneralUtils import FetchMediaUtils
+from os import environ
 
 # Command imports
 import fetch_youtube_f
@@ -27,12 +23,30 @@ FORMATS: list[list[str]] = [
 FORMAT_CHOICES = []
 for index, fi_format in enumerate(FORMATS):
     FORMAT_CHOICES.append(SlashCommandChoice(fi_format[0], index))
-VERSION = "2.3.0a"
+VERSION = "2.4.0a"
 
 # Globals
 color_index = 0
 bot = interactions.AutoShardedClient()
-config = Configuration("conf.json")
+# config = Configuration("conf.json")
+
+TOKEN = environ["token"]  # Intentionally throw an error
+
+REDDIT_CLIENT_ID = environ.get("reddit_client_id", "")
+REDDIT_CLIENT_SECRET = environ.get("reddit_client_secret", "")
+REDDIT_CLIENT_AGENT = environ.get("reddit_client_agent", "")
+
+
+# Done to help minimize the need to significantly refactor the code.
+# TODO: fix this? I don't know. This is just a quick refactor.
+class DummyConfig:
+    debug = False
+    discord_scope = ""
+    discord_debug_token = ""  # DO NOT USE THIS. PERIOD.
+    discord_token = TOKEN
+
+config = DummyConfig
+
 
 if config.debug:
     bot.debug_scope = config.discord_scope

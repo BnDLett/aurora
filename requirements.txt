@@ -2,3 +2,4 @@ aiohttp~=3.11.14
 asyncpraw~=7.8.1
 asyncprawcore~=2.4.0
 yt-dlp~=2025.3.21
+discord-py-interactions~=5.15.0
