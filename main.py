@@ -59,7 +59,7 @@ if config.debug:
 else:
     token = config.discord_token
 
-bot.load_extension("interactions.ext.jurigged")
+# bot.load_extension("interactions.ext.jurigged")
 
 
 # Commands
