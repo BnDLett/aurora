@@ -41,9 +41,14 @@ REDDIT_CLIENT_AGENT = environ.get("reddit_client_agent", "")
 # TODO: fix this? I don't know. This is just a quick refactor.
 class DummyConfig:
     debug = False
+
     discord_scope = ""
     discord_debug_token = ""  # DO NOT USE THIS. PERIOD.
     discord_token = TOKEN
+
+    reddit_client_id = REDDIT_CLIENT_ID
+    reddit_client_secret = REDDIT_CLIENT_SECRET
+    reddit_client_agent = REDDIT_CLIENT_AGENT
 
 config = DummyConfig
 
