@@ -8,7 +8,7 @@ from interactions import slash_command, SlashContext, slash_option, OptionType, 
 
 import GeneralUtils
 from GeneralUtils import FetchMediaUtils
-from os import environ
+from os import getenv
 
 # Command imports
 import fetch_youtube_f
@@ -30,11 +30,11 @@ color_index = 0
 bot = interactions.AutoShardedClient()
 # config = Configuration("conf.json")
 
-TOKEN = environ["token"]  # Intentionally throw an error
+TOKEN = getenv("TOKEN")  # Intentionally throw an error
 
-REDDIT_CLIENT_ID = environ.get("reddit_client_id", "")
-REDDIT_CLIENT_SECRET = environ.get("reddit_client_secret", "")
-REDDIT_CLIENT_AGENT = environ.get("reddit_client_agent", "")
+REDDIT_CLIENT_ID = getenv("REDDIT_CLIENT_ID", "")
+REDDIT_CLIENT_SECRET = getenv("REDDIT_CLIENT_SECRET", "")
+REDDIT_CLIENT_AGENT = getenv("REDDIT_CLIENT_AGENT", "")
 
 
 # Done to help minimize the need to significantly refactor the code.
